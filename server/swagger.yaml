@@ -1,0 +1,314 @@
+openapi: 3.0.0
+info:
+  title: TMUA Prep API
+  description: API documentation for the TMUA Prep Platform
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+    description: Local server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [USER, ADMIN]
+    
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    SignupRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+
+    MembershipPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        durationMonths:
+          type: integer
+
+# TAGS
+tags:
+  - name: Auth
+    description: User authentication
+  - name: Membership
+    description: Plans and payments
+  - name: Questions
+    description: Practice questions
+  - name: Sessions
+    description: Practice sessions
+  - name: Admin
+    description: Admin management
+
+paths:
+  # AUTH ROUTES
+  /auth/signup:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+      responses:
+        201:
+          description: User created successfully
+        400:
+          description: User already exists
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        401:
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: User profile data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  # MEMBERSHIP ROUTES
+  /memberships/plans:
+    get:
+      tags: [Membership]
+      summary: Get all membership plans
+      responses:
+        200:
+          description: List of plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MembershipPlan'
+
+  /memberships/checkout:
+    post:
+      tags: [Membership]
+      summary: Create Stripe checkout session
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                planId:
+                  type: integer
+      responses:
+        200:
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  url:
+                    type: string
+
+  # QUESTIONS ROUTES
+  /questions/random:
+    get:
+      tags: [Questions]
+      summary: Get a random question (requires ACTIVE membership)
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Random question
+        403:
+          description: Active membership required
+
+  # SESSION ROUTES
+  /sessions/start:
+    post:
+      tags: [Sessions]
+      summary: Start a new practice session
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Session started
+
+  /sessions/answer:
+    post:
+      tags: [Sessions]
+      summary: Submit an answer
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: integer
+                questionId:
+                  type: integer
+                selectedOption:
+                  type: integer
+      responses:
+        200:
+          description: Answer recorded
+
+  /sessions/end:
+    post:
+      tags: [Sessions]
+      summary: End a session
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: integer
+
+  /sessions/history:
+    get:
+      tags: [Sessions]
+      summary: Get past session history
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: List of past sessions
+
+  # ADMIN ROUTES
+  /admin/stats:
+    get:
+      tags: [Admin]
+      summary: Get system statistics
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: System stats
+        403:
+          description: Admin access required
+  
+  /admin/users:
+    get:
+      tags: [Admin]
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: List of users
+  
+  /admin/revoke:
+    post:
+      tags: [Admin]
+      summary: Revoke user membership
+      security:
+        - bearerAuth: []
+      requestBody:
+         required: true
+         content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 userId: 
+                   type: integer
+      responses:
+         200:
+           description: Membership revoked
+
+  /admin/grant:
+    post:
+      tags: [Admin]
+      summary: Grant user membership
+      security:
+        - bearerAuth: []
+      requestBody:
+         required: true
+         content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 userId: 
+                   type: integer
+                 planId:
+                   type: integer
+      responses:
+         200:
+           description: Membership granted

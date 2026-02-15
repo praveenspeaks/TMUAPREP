@@ -1,0 +1,186 @@
+{
+  "sections": [
+    {
+      "id": "hero",
+      "key": "hero",
+      "name": "Hero",
+      "enabled": true,
+      "position": 1,
+      "content": {
+        "badge": "What's new",
+        "badgeSubtext": "Config test saved",
+        "title": "Master the TMUA.\nSecure Your Future.",
+        "description": "The smartest way to prepare for the Test of Mathematics for University Admission. Join thousands of students getting into top UK universities.",
+        "ctaText": "Start Preparing Now",
+        "ctaLink": "/signup",
+        "secondaryText": "Log in",
+        "secondaryLink": "/login",
+        "metrics": [
+          {
+            "label": "Mock Tests",
+            "value": "120+"
+          },
+          {
+            "label": "Questions",
+            "value": "1000+"
+          },
+          {
+            "label": "Avg. Score Lift",
+            "value": "+24%"
+          },
+          {
+            "label": "Students",
+            "value": "5k+"
+          }
+        ]
+      }
+    },
+    {
+      "id": "logos",
+      "key": "logos",
+      "name": "University Logos",
+      "enabled": true,
+      "position": 2,
+      "content": {
+        "title": "Trusted by future students of",
+        "logos": [
+          "Cambridge",
+          "Imperial",
+          "Warwick",
+          "LSE",
+          "Durham"
+        ]
+      }
+    },
+    {
+      "id": "features",
+      "key": "features",
+      "name": "Features",
+      "enabled": true,
+      "position": 3,
+      "content": {
+        "eyebrow": "Prepare Smarter",
+        "title": "Everything you need to excel",
+        "description": "We've analyzed past papers and grading criteria to build the ultimate preparation tool.",
+        "items": [
+          {
+            "name": "Real Exam Simulation",
+            "description": "Practice under timed conditions with an interface that mimics the real computer-based test.",
+            "icon": "Clock"
+          },
+          {
+            "name": "Detailed Analytics",
+            "description": "Track your performance over time. Identify your weak areas and focus your revision where it counts.",
+            "icon": "BarChart"
+          },
+          {
+            "name": "1000+ Questions",
+            "description": "Access a massive bank of questions covering every topic, difficulty level, and question type.",
+            "icon": "BookOpen"
+          },
+          {
+            "name": "Expert Explanations",
+            "description": "Understand the why behind every answer with step-by-step solutions from top tutors.",
+            "icon": "CheckCircle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pricing",
+      "key": "pricing",
+      "name": "Pricing",
+      "enabled": true,
+      "position": 4,
+      "content": {
+        "title": "Simple, transparent pricing",
+        "description": "Choose the plan that fits your study schedule. No hidden fees.",
+        "planName": "Lifetime membership",
+        "planDescription": "Get access to all features including unlimited practice tests, analytics, and priority support.",
+        "price": "$349",
+        "currency": "USD",
+        "ctaText": "Get access",
+        "ctaLink": "/signup",
+        "features": [
+          "Unlimited practice tests",
+          "1000+ question bank",
+          "Performance analytics",
+          "Priority support"
+        ]
+      }
+    },
+    {
+      "id": "testimonials",
+      "key": "testimonials",
+      "name": "Testimonials",
+      "enabled": true,
+      "position": 5,
+      "content": {
+        "eyebrow": "Testimonials",
+        "title": "Startups and students love us",
+        "items": [
+          {
+            "quote": "The practice questions were harder than the real exam, which made the actual test feel like a breeze.",
+            "name": "John Doe",
+            "role": "Cambridge Applicant",
+            "initials": "JD"
+          },
+          {
+            "quote": "The analytics helped me focus only on weak topics. I improved rapidly in just a few weeks.",
+            "name": "Alice Stone",
+            "role": "Imperial Applicant",
+            "initials": "AS"
+          }
+        ]
+      }
+    },
+    {
+      "id": "footer",
+      "key": "footer",
+      "name": "Footer",
+      "enabled": true,
+      "position": 6,
+      "content": {
+        "brandName": "TMUA Prep",
+        "description": "Making elite university admissions accessible to everyone through smarter preparation.",
+        "linkGroups": [
+          {
+            "title": "Solutions",
+            "items": [
+              {
+                "label": "Practice Tests",
+                "href": "#"
+              },
+              {
+                "label": "Analytics",
+                "href": "#"
+              },
+              {
+                "label": "Resources",
+                "href": "#"
+              }
+            ]
+          },
+          {
+            "title": "Support",
+            "items": [
+              {
+                "label": "Pricing",
+                "href": "#"
+              },
+              {
+                "label": "Documentation",
+                "href": "#"
+              },
+              {
+                "label": "Guides",
+                "href": "#"
+              }
+            ]
+          }
+        ],
+        "copyright": "� 2026 TMUA Prep Platform, Inc. All rights reserved."
+      }
+    }
+  ]
+}

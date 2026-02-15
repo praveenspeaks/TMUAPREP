@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  STAFF
+  ADMIN
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(USER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  membership UserMembership?
+  sessions   Session[]
+  payments   Payment[]
+}
+
+model MembershipPlan {
+  id             Int      @id @default(autoincrement())
+  name           String
+  durationMonths Int
+  price          Float
+  stripePriceId  String?
+
+  memberships    UserMembership[]
+}
+
+model UserMembership {
+  id             Int              @id @default(autoincrement())
+  userId         Int              @unique
+  planId         Int
+  startDate      DateTime         @default(now())
+  endDate        DateTime
+  status         MembershipStatus @default(ACTIVE)
+  uniqueMemberId String           @unique
+
+  user           User             @relation(fields: [userId], references: [id])
+  plan           MembershipPlan   @relation(fields: [planId], references: [id])
+}
+
+model Question {
+  id                Int      @id @default(autoincrement())
+  text              String
+  options           String[]
+  correctOptionIndex Int
+  markings          String?
+  createdAt         DateTime @default(now())
+
+  answers           UserAnswer[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  startTime DateTime @default(now())
+  endTime   DateTime?
+  score     Int      @default(0)
+  
+  user      User     @relation(fields: [userId], references: [id])
+  answers   UserAnswer[]
+}
+
+model UserAnswer {
+  id             Int      @id @default(autoincrement())
+  sessionId      Int
+  questionId     Int
+  selectedOption Int
+  isCorrect      Boolean
+
+  session        Session  @relation(fields: [sessionId], references: [id])
+  question       Question @relation(fields: [questionId], references: [id])
+
+  @@unique([sessionId, questionId])
+}
+
+model Payment {
+  id                    Int      @id @default(autoincrement())
+  userId                Int
+  amount                Float
+  currency              String   @default("usd")
+  status                String
+  stripePaymentIntentId String?
+  createdAt             DateTime @default(now())
+
+  user                  User     @relation(fields: [userId], references: [id])
+}
