@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 import Button from '../components/Button';
-import Input from '../components/Input';
 import { ImageUp, KeyRound, Copy, Settings as SettingsIcon } from 'lucide-react';
 
 interface UploadedImage {
@@ -17,12 +16,10 @@ interface UploadedImage {
 
 const AdminSettings = () => {
     const { token } = useAuthStore();
-    const [apiKey, setApiKey] = useState('');
     const [maskedApiKey, setMaskedApiKey] = useState('');
     const [hasApiKey, setHasApiKey] = useState(false);
     const [images, setImages] = useState<UploadedImage[]>([]);
     const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -49,35 +46,6 @@ const AdminSettings = () => {
     useEffect(() => {
         fetchSettings();
     }, []);
-
-    const saveApiKey = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            setSaving(true);
-            setError('');
-            setSuccess('');
-
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/settings/imgbb`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ apiKey }),
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Failed to save API key');
-
-            setApiKey('');
-            setHasApiKey(!!data.hasApiKey);
-            setMaskedApiKey(data.maskedApiKey || '');
-            setSuccess('imgBB API key saved successfully.');
-        } catch (e: any) {
-            setError(e.message || 'Failed to save API key');
-        } finally {
-            setSaving(false);
-        }
-    };
 
     const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -146,18 +114,9 @@ const AdminSettings = () => {
                             <p className="text-sm text-slate-500 mt-3">
                                 Current key status: {hasApiKey ? `Configured (${maskedApiKey})` : 'Not configured'}
                             </p>
-
-                            <form className="mt-4 space-y-3" onSubmit={saveApiKey}>
-                                <Input
-                                    type="password"
-                                    placeholder="Paste imgBB API key"
-                                    value={apiKey}
-                                    onChange={(e) => setApiKey(e.target.value)}
-                                />
-                                <Button type="submit" className="w-full" isLoading={saving}>
-                                    Save API Key
-                                </Button>
-                            </form>
+                            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-3">
+                                API key is now managed from server environment variable <strong>IMGBB_API_KEY</strong> and is not stored in dashboard anymore.
+                            </p>
                         </>
                     )}
                 </div>

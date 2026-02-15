@@ -6,7 +6,6 @@ const settingsPath = path.join(settingsDir, 'siteSettings.json');
 
 const defaultSettings = {
     imgbb: {
-        apiKey: '',
         uploads: [],
     },
 };
@@ -30,7 +29,6 @@ const readSettings = async () => {
             ...parsed,
             imgbb: {
                 ...defaultSettings.imgbb,
-                ...(parsed.imgbb || {}),
                 uploads: Array.isArray(parsed?.imgbb?.uploads) ? parsed.imgbb.uploads : [],
             },
         };
@@ -53,7 +51,7 @@ const maskKey = (key) => {
 const getImgBbSettings = async (_req, res) => {
     try {
         const settings = await readSettings();
-        const apiKey = settings.imgbb.apiKey || '';
+        const apiKey = process.env.IMGBB_API_KEY || '';
 
         res.json({
             hasApiKey: !!apiKey,
@@ -87,19 +85,8 @@ const getPublicImgBbImages = async (_req, res) => {
 
 const updateImgBbSettings = async (req, res) => {
     try {
-        const { apiKey } = req.body;
-        if (typeof apiKey !== 'string') {
-            return res.status(400).json({ message: 'apiKey must be a string' });
-        }
-
-        const settings = await readSettings();
-        settings.imgbb.apiKey = apiKey.trim();
-        await writeSettings(settings);
-
-        res.json({
-            message: 'imgBB API key saved',
-            hasApiKey: !!settings.imgbb.apiKey,
-            maskedApiKey: maskKey(settings.imgbb.apiKey),
+        return res.status(400).json({
+            message: 'imgBB API key is managed through environment variable IMGBB_API_KEY and cannot be saved from dashboard.',
         });
     } catch (error) {
         res.status(500).json({ message: 'Error saving imgBB settings', error: error.message });
@@ -109,7 +96,7 @@ const updateImgBbSettings = async (req, res) => {
 const uploadToImgBb = async (req, res) => {
     try {
         const settings = await readSettings();
-        const apiKey = settings.imgbb.apiKey;
+        const apiKey = process.env.IMGBB_API_KEY;
 
         if (!apiKey) {
             return res.status(400).json({ message: 'imgBB API key not configured' });

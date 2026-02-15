@@ -3,6 +3,9 @@ const prisma = new PrismaClient();
 const { hashPassword } = require('../src/utils/auth');
 
 async function main() {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+    const adminPasswordPlain = process.env.ADMIN_PASSWORD || 'ChangeMe123!';
+
     // Create Plans
     const plans = [
         { name: '6 Months Plan', durationMonths: 6, price: 49.99 },
@@ -16,12 +19,12 @@ async function main() {
     }
 
     // Create Admin User
-    const adminPassword = await hashPassword('admin123');
+    const adminPassword = await hashPassword(adminPasswordPlain);
     await prisma.user.upsert({
-        where: { email: 'admin@tmuaprep.com' },
+        where: { email: adminEmail },
         update: {},
         create: {
-            email: 'admin@tmuaprep.com',
+            email: adminEmail,
             password: adminPassword,
             name: 'Admin User',
             role: 'ADMIN',

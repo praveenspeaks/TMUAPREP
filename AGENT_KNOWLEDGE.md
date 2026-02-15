@@ -92,24 +92,26 @@ Source: `server/prisma/schema.prisma`
 ## 9) Seed Data and Admin
 - Seed script: `server/prisma/seed.js`
   - Creates 2 plans
-  - Creates admin user: `admin@tmuaprep.com` / `admin123`
+  - Creates admin user from environment variables (`ADMIN_EMAIL`, `ADMIN_PASSWORD`)
   - Creates sample question
 
 ## 10) Important Caveats for Future Agents
-1. `server/src/utils/prismaClient.js` uses a hardcoded remote PostgreSQL URL instead of `DATABASE_URL`.
-2. Checkout response mismatch:
+1. Checkout response mismatch:
    - Backend returns `{ id: session.id }` in `createCheckoutSession`
    - Frontend expects `data.url` and redirects only if URL exists
    - Result: checkout flow will not redirect without adjustment.
-3. Dashboard links include routes not defined in router (e.g., `/profile`).
-4. Session score is increment count of correct answers, but UI treats it as percentage in some places.
-5. Root and server package versions for Prisma differ (`^7` at root, `^5` in server).
+2. Dashboard links include routes not defined in router (e.g., `/profile`).
+3. Session score is increment count of correct answers, but UI treats it as percentage in some places.
+4. Root and server package versions for Prisma differ (`^7` at root, `^5` in server).
 
 ## 11) Environment Variables Expected
 - Backend (`server`):
   - `PORT`
   - `JWT_SECRET`
-  - `DATABASE_URL` (intended by Prisma schema, but currently bypassed by hardcoded URL in prisma client util)
+  - `DATABASE_URL`
+  - `IMGBB_API_KEY`
+  - `ADMIN_EMAIL` / `ADMIN_PASSWORD` (for seed)
+  - `ADMIN_VERIFY_EMAIL` / `ADMIN_VERIFY_PASSWORD` (for verify script)
   - `STRIPE_SECRET_KEY`
   - `CLIENT_URL`
 - Frontend (`client`):

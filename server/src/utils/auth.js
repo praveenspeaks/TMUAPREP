@@ -1,7 +1,12 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const getJwtSecret = () => process.env.JWT_SECRET || 'dev_jwt_secret_change_me';
+const getJwtSecret = () => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET is not defined. Set it in environment variables.');
+    }
+    return process.env.JWT_SECRET;
+};
 
 const generateToken = (user) => {
     return jwt.sign(

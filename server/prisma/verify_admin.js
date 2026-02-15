@@ -1,7 +1,11 @@
 const { PrismaClient } = require('@prisma/client');
 const { comparePassword } = require('../src/utils/auth');
 
-const dbUrl = "postgresql://rohit:rohit%2123@72.60.23.150:5433/tmuaprep?sslmode=disable";
+const dbUrl = process.env.DATABASE_URL;
+
+if (!dbUrl) {
+    throw new Error('DATABASE_URL is required to run verify_admin.js');
+}
 
 const prisma = new PrismaClient({
     datasources: {
@@ -12,8 +16,12 @@ const prisma = new PrismaClient({
 });
 
 async function verifyAdmin() {
-    const email = 'admin@naman.com';
-    const password = 'Admin@123';
+    const email = process.env.ADMIN_VERIFY_EMAIL;
+    const password = process.env.ADMIN_VERIFY_PASSWORD;
+
+    if (!email || !password) {
+        throw new Error('Set ADMIN_VERIFY_EMAIL and ADMIN_VERIFY_PASSWORD before running verify_admin.js');
+    }
 
     try {
         const user = await prisma.user.findUnique({ where: { email } });
