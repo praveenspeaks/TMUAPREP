@@ -1,0 +1,20 @@
+name: EasyPanel Auto Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger-easypanel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger EasyPanel Deploy Webhook
+        env:
+          EASYPANEL_DEPLOY_WEBHOOK_URL: ${{ secrets.EASYPANEL_DEPLOY_WEBHOOK_URL }}
+        run: |
+          if [ -z "$EASYPANEL_DEPLOY_WEBHOOK_URL" ]; then
+            echo "EASYPANEL_DEPLOY_WEBHOOK_URL is not set."
+            exit 1
+          fi
+          curl -X POST -fsS "$EASYPANEL_DEPLOY_WEBHOOK_URL"

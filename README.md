@@ -116,3 +116,14 @@ Authorization: Bearer <your_jwt_token>
 -   **Database**: PostgreSQL, Prisma ORM
 -   **Payments**: Stripe
 -   **Docs**: Swagger (OpenAPI 3.0)
+
+---
+
+## 🚢 Deploy on EasyPanel (Docker Compose)
+
+-   Production compose file is available at [docker-compose.yml](docker-compose.yml).
+-   Service images are defined by [client/Dockerfile](client/Dockerfile) and [server/Dockerfile](server/Dockerfile).
+-   Frontend uses Nginx reverse proxy config at [client/nginx.conf](client/nginx.conf) and proxies `/api` to backend.
+-   Environment template is provided in [.env.example](.env.example).
+
+For full step-by-step setup (including webhook auto-deploy on each push), see [docs/easypanel-deploy.md](docs/easypanel-deploy.md).

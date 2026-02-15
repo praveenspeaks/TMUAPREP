@@ -1,6 +1,10 @@
 const { PrismaClient } = require('@prisma/client');
 
-const dbUrl = "postgresql://rohit:rohit%2123@72.60.23.150:5433/tmuaprep?sslmode=disable";
+const dbUrl = process.env.DATABASE_URL;
+
+if (!dbUrl) {
+    throw new Error('DATABASE_URL is not defined. Set it in environment variables before starting the server.');
+}
 
 const prisma = new PrismaClient({
     datasources: {
