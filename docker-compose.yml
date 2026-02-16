@@ -1,20 +1,4 @@
 services:
-  db:
-    profiles: ["local-db"]
-    image: postgres:15-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-tmua}
-      POSTGRES_USER: ${POSTGRES_USER:-tmua}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tmua_password}
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tmua} -d ${POSTGRES_DB:-tmua}"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
   server:
     build:
       context: ./server
@@ -39,6 +23,3 @@ services:
       - server
     expose:
       - "80"
-
-volumes:
-  db_data:
