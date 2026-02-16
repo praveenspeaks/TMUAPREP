@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 import Button from '../components/Button';
-import { ImageUp, KeyRound, Copy, Settings as SettingsIcon } from 'lucide-react';
+import { ImageUp, Copy, Settings as SettingsIcon } from 'lucide-react';
 
 interface UploadedImage {
     id: string;
@@ -16,7 +16,6 @@ interface UploadedImage {
 
 const AdminSettings = () => {
     const { token } = useAuthStore();
-    const [maskedApiKey, setMaskedApiKey] = useState('');
     const [hasApiKey, setHasApiKey] = useState(false);
     const [images, setImages] = useState<UploadedImage[]>([]);
     const [loading, setLoading] = useState(true);
@@ -34,7 +33,6 @@ const AdminSettings = () => {
             if (!res.ok) throw new Error(data.message || 'Failed to load settings');
 
             setHasApiKey(!!data.hasApiKey);
-            setMaskedApiKey(data.maskedApiKey || '');
             setImages(Array.isArray(data.uploads) ? data.uploads : []);
         } catch (e: any) {
             setError(e.message || 'Failed to load settings');
@@ -94,34 +92,14 @@ const AdminSettings = () => {
             <section className="rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 md:p-8 shadow-lg">
                 <p className="text-xs uppercase tracking-wider text-slate-300 font-semibold">Platform Settings</p>
                 <h1 className="text-3xl md:text-4xl font-bold mt-1">imgBB Image Configuration</h1>
-                <p className="text-slate-300 mt-2">Store API key, upload website images to imgBB, and reuse URLs in Homepage Builder.</p>
+                <p className="text-slate-300 mt-2">Upload website images to imgBB and reuse URLs in Homepage Builder.</p>
             </section>
 
             {error && <div className="rounded-xl border border-rose-200 bg-rose-50 text-rose-700 px-4 py-3 text-sm">{error}</div>}
             {success && <div className="rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 px-4 py-3 text-sm">{success}</div>}
 
-            <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <section>
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
-                    <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                        <KeyRound className="h-5 w-5 text-indigo-600" />
-                        imgBB API Key
-                    </h2>
-
-                    {loading ? (
-                        <p className="text-sm text-slate-500 mt-3">Loading...</p>
-                    ) : (
-                        <>
-                            <p className="text-sm text-slate-500 mt-3">
-                                Current key status: {hasApiKey ? `Configured (${maskedApiKey})` : 'Not configured'}
-                            </p>
-                            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-3">
-                                API key is now managed from server environment variable <strong>IMGBB_API_KEY</strong> and is not stored in dashboard anymore.
-                            </p>
-                        </>
-                    )}
-                </div>
-
-                <div className="xl:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
                     <div className="flex items-center justify-between flex-wrap gap-3">
                         <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
                             <ImageUp className="h-5 w-5 text-violet-600" />
@@ -133,7 +111,13 @@ const AdminSettings = () => {
                         </label>
                     </div>
 
-                    {!hasApiKey && <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-3">Configure API key first to enable uploads.</p>}
+                    {loading ? (
+                        <p className="text-sm text-slate-500 mt-3">Loading...</p>
+                    ) : (
+                        <p className="text-sm text-slate-500 mt-3">imgBB key status: {hasApiKey ? 'Configured' : 'Not configured'}</p>
+                    )}
+
+                    {!hasApiKey && <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-3">Set <strong>IMGBB_API_KEY</strong> in root <strong>.env</strong> and restart server to enable uploads.</p>}
 
                     <div className="mt-5 space-y-3 max-h-[420px] overflow-auto pr-1">
                         {images.length === 0 ? (
